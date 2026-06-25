@@ -1,122 +1,3037 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>FloatText - Floating Clipboard Tool</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FloatText - Floating Clipboard for Android | Copy Faster</title>
+    <meta
+      name="description"
+      content="FloatText is a powerful floating clipboard app for Android. Copy multiple text items without switching apps. Download free on Google Play."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              grotesk: ["Space Grotesk", "sans-serif"],
+            },
+            colors: {
+              primary: "#1A56DB",
+              "primary-dark": "#1344b8",
+              surface: "#F8F9FF",
+              "on-surface": "#0B1C30",
+              secondary: "#545F73",
+              "outline-variant": "#C3C5D7",
+              "surface-container-low": "#EFF4FF",
+              "inverse-surface": "#213145",
+            },
+            animation: {
+              "float-slow": "floatSlow 6s ease-in-out infinite",
+              "float-med": "floatMed 4s ease-in-out infinite",
+              "bounce-sub": "bounceSub 2s ease-in-out infinite",
+            },
+            keyframes: {
+              floatSlow: {
+                "0%,100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-16px)" },
+              },
+              floatMed: {
+                "0%,100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              bounceSub: {
+                "0%,100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-5px)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f8f9ff;
+        color: #0b1c30;
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1a56db55;
+        border-radius: 9999px;
+      }
+      .gradient-text {
+        background: linear-gradient(135deg, #1a56db, #3b82f6, #06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-bg {
+        background:
+          radial-gradient(
+            ellipse 80% 50% at 50% -10%,
+            rgba(26, 86, 219, 0.12),
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 90% 50%,
+            rgba(59, 130, 246, 0.08),
+            transparent 60%
+          ),
+          #f8f9ff;
+      }
+      .float-chip {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow:
+          0 8px 32px rgba(26, 86, 219, 0.18),
+          0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(26, 86, 219, 0.15);
+      }
+      .phone-frame {
+        background: #0b1c30;
+        border-radius: 44px;
+        padding: 10px;
+        box-shadow:
+          0 0 0 2px rgba(26, 86, 219, 0.2),
+          0 30px 80px rgba(26, 86, 219, 0.25),
+          0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      .phone-screen {
+        border-radius: 36px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .play-btn {
+        background: linear-gradient(135deg, #1a56db, #1344b8);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(26, 86, 219, 0.35);
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 28px;
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .play-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(26, 86, 219, 0.45);
+      }
+      .play-btn:active {
+        transform: translateY(0);
+      }
+      .section-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: rgba(26, 86, 219, 0.08);
+        border: 1px solid rgba(26, 86, 219, 0.2);
+        border-radius: 999px;
+        color: #1a56db;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .feature-card {
+        background: #fff;
+        border: 1px solid #e5eeff;
+        border-radius: 20px;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .feature-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(26, 86, 219, 0.25);
+        box-shadow: 0 20px 40px rgba(26, 86, 219, 0.12);
+      }
+      .nav-glass {
+        background: rgba(248, 249, 255, 0.88);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+      .stat-pill {
+        background: #fff;
+        border: 1px solid #e5eeff;
+        border-radius: 999px;
+        box-shadow: 0 4px 16px rgba(26, 86, 219, 0.08);
+      }
+      .demo-win {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.14),
+          0 4px 12px rgba(26, 86, 219, 0.12);
+        border: 1px solid rgba(26, 86, 219, 0.1);
+        overflow: hidden;
+      }
+      .demo-bar {
+        background: linear-gradient(135deg, #1a56db, #2563eb);
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .demo-item {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5ff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        gap: 8px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .demo-item:hover {
+        background: #eef2ff;
+      }
+      .demo-item.active {
+        background: #eef2ff;
+        border-left: 3px solid #1a56db;
+      }
+      .sep-on {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 10px;
+        background: #1a56db;
+        color: #fff;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .sep-off {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 10px;
+        background: #f1f5ff;
+        color: #545f73;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid #e5eeff;
+      }
+      .bubble-icon {
+        width: 52px;
+        height: 52px;
+        background: linear-gradient(135deg, #1a56db, #2563eb);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(26, 86, 219, 0.4);
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-weight: 900;
+        font-size: 20px;
+      }
+      .bubble-icon:hover {
+        transform: scale(1.08);
+      }
+      .step-num {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #1a56db, #3b82f6);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 800;
+        font-size: 18px;
+        margin: 0 auto 20px;
+      }
+      .cta-section {
+        background: linear-gradient(
+          135deg,
+          #0b1c30 0%,
+          #1a56db 60%,
+          #2563eb 100%
+        );
+        border-radius: 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 60% 60% at 80% 50%,
+          rgba(59, 130, 246, 0.25),
+          transparent 70%
+        );
+      }
+      .stars {
+        color: #f59e0b;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 8px;
+        background: #eef2ff;
+        color: #1a56db;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .mq-wrap {
+        overflow: hidden;
+      }
+      .mq-track {
+        display: flex;
+        gap: 28px;
+        animation: mqAnim 22s linear infinite;
+        width: max-content;
+      }
+      .mq-track:hover {
+        animation-play-state: paused;
+      }
+      @keyframes mqAnim {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      [data-aos] {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      [data-aos].vis {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      [data-aos="fr"] {
+        transform: translateX(-22px);
+      }
+      [data-aos="fr"].vis {
+        transform: translateX(0);
+      }
+      [data-aos="fl"] {
+        transform: translateX(22px);
+      }
+      [data-aos="fl"].vis {
+        transform: translateX(0);
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        vertical-align: middle;
+        line-height: 1;
+        display: inline-flex;
+      }
+      details summary {
+        list-style: none;
+      }
+      details summary::-webkit-details-marker {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ══ NAVBAR ══ -->
+    <header
+      id="nav"
+      class="fixed top-0 w-full z-50 border-b border-transparent transition-all duration-300"
+    >
+      <nav
+        class="nav-glass flex justify-between items-center px-6 md:px-10 h-16 max-w-7xl mx-auto"
+      >
+        <a
+          href="#"
+          class="flex items-center gap-2 select-none"
+          style="text-decoration: none"
+        >
+          <div
+            class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm"
+          >
+            <span
+              class="material-symbols-outlined text-white"
+              style="font-size: 18px"
+              >content_paste</span
+            >
+          </div>
+          <span class="font-grotesk font-bold text-lg" style="color: #0b1c30"
+            >Float<span style="color: #1a56db">Text</span></span
+          >
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+          <a
+            href="#features"
+            class="text-secondary text-sm font-medium hover:text-primary transition-colors"
+            style="text-decoration: none"
+            >Features</a
+          >
+          <a
+            href="#how-it-works"
+            class="text-secondary text-sm font-medium hover:text-primary transition-colors"
+            style="text-decoration: none"
+            >How It Works</a
+          >
+          <a
+            href="#support"
+            class="text-secondary text-sm font-medium hover:text-primary transition-colors"
+            style="text-decoration: none"
+            >Support</a
+          >
+          <a
+            href="#privacy"
+            class="text-secondary text-sm font-medium hover:text-primary transition-colors"
+            style="text-decoration: none"
+            >Privacy</a
+          >
+        </div>
+        <a
+          href="https://play.google.com/store/apps/details?id=com.floattext.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="play-btn"
+          style="padding: 10px 20px; font-size: 13px; border-radius: 12px"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M3 20.5v-17c0-.83.94-1.3 1.6-.8l14 8.5c.6.36.6 1.24 0 1.6l-14 8.5c-.66.5-1.6.03-1.6-.8z"
+            />
+          </svg>
+          Get Free App
+        </a>
+      </nav>
+    </header>
 
-<style>
+    <!-- ══ HERO ══ -->
+    <section
+      class="hero-bg min-h-screen flex items-center pt-16 relative overflow-hidden"
+    >
+      <div
+        class="absolute top-1/4 -left-32 w-96 h-96 rounded-full blur-3xl pointer-events-none"
+        style="background: rgba(26, 86, 219, 0.06)"
+      ></div>
+      <div
+        class="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full blur-3xl pointer-events-none"
+        style="background: rgba(59, 130, 246, 0.07)"
+      ></div>
+      <div
+        class="max-w-7xl mx-auto px-6 md:px-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center py-24"
+      >
+        <!-- Left -->
+        <div class="flex flex-col items-start gap-6" data-aos="fr">
+          <div class="section-badge">
+            <span class="material-symbols-outlined" style="font-size: 13px"
+              >bolt</span
+            >
+            Floating Clipboard for Android
+          </div>
+          <h1
+            class="font-grotesk font-black tracking-tight"
+            style="
+              font-size: clamp(36px, 5vw, 56px);
+              line-height: 1.08;
+              color: #0b1c30;
+            "
+          >
+            Copy Smarter.<br /><span class="gradient-text">Stay on Top.</span>
+          </h1>
+          <p class="text-secondary text-lg leading-relaxed max-w-lg">
+            FloatText keeps a
+            <strong style="color: #0b1c30">floating window</strong> above every
+            app so you can cycle through multiple text items and paste them one
+            by one — no more endless task-switching.
+          </p>
+          <ul class="flex flex-col gap-3 mt-1">
+            <li class="flex items-center gap-3 text-sm text-secondary">
+              <span
+                style="
+                  width: 20px;
+                  height: 20px;
+                  background: #dcfce7;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <svg width="10" height="10" fill="none">
+                  <path
+                    d="M2 5l2 2 4-4"
+                    stroke="#16A34A"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg> </span
+              >Navigate tokens with Previous / Next, or copy instantly
+            </li>
+            <li class="flex items-center gap-3 text-sm text-secondary">
+              <span
+                style="
+                  width: 20px;
+                  height: 20px;
+                  background: #dcfce7;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <svg width="10" height="10" fill="none">
+                  <path
+                    d="M2 5l2 2 4-4"
+                    stroke="#16A34A"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg> </span
+              >Collapse to a tiny bubble when not in use
+            </li>
+            <li class="flex items-center gap-3 text-sm text-secondary">
+              <span
+                style="
+                  width: 20px;
+                  height: 20px;
+                  background: #dcfce7;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <svg width="10" height="10" fill="none">
+                  <path
+                    d="M2 5l2 2 4-4"
+                    stroke="#16A34A"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg> </span
+              >Import from .txt file or type / paste directly
+            </li>
+            <li class="flex items-center gap-3 text-sm text-secondary">
+              <span
+                style="
+                  width: 20px;
+                  height: 20px;
+                  background: #dcfce7;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <svg width="10" height="10" fill="none">
+                  <path
+                    d="M2 5l2 2 4-4"
+                    stroke="#16A34A"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg> </span
+              >Full Light &amp; Dark mode support
+            </li>
+          </ul>
+          <div class="flex flex-col sm:flex-row gap-4 mt-4">
+            <a
+              href="https://play.google.com/store/apps/details?id=com.floattext.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="play-btn"
+            >
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+                <path d="M8 4l28.5 20L8 44V4z" fill="url(#h1)" />
+                <path d="M8 4l20 20-20 8V4z" fill="url(#h2)" />
+                <path d="M8 44l20-20 9.5 9.5L8 44z" fill="url(#h3)" />
+                <defs>
+                  <linearGradient
+                    id="h1"
+                    x1="8"
+                    y1="4"
+                    x2="36.5"
+                    y2="24"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#00C6FF" />
+                    <stop offset="1" stop-color="#0072FF" />
+                  </linearGradient>
+                  <linearGradient
+                    id="h2"
+                    x1="8"
+                    y1="4"
+                    x2="28"
+                    y2="24"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#54D26E" />
+                    <stop offset="1" stop-color="#35BC5A" />
+                  </linearGradient>
+                  <linearGradient
+                    id="h3"
+                    x1="8"
+                    y1="44"
+                    x2="37.5"
+                    y2="33"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#FF4E50" />
+                    <stop offset="1" stop-color="#F9D423" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  line-height: 1.2;
+                "
+              >
+                <span style="font-size: 10px; opacity: 0.75; font-weight: 400"
+                  >GET IT ON</span
+                >
+                <span style="font-size: 16px; font-weight: 700"
+                  >Google Play</span
+                >
+              </div>
+            </a>
+            <a
+              href="#features"
+              class="flex items-center gap-2 bg-white border border-outline-variant text-on-surface rounded-2xl font-semibold text-sm hover:border-primary hover:text-primary transition-all"
+              style="padding: 14px 28px; text-decoration: none"
+            >
+              <span class="material-symbols-outlined" style="font-size: 20px"
+                >explore</span
+              >See Features
+            </a>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 mt-2">
+            <div
+              class="stat-pill flex items-center gap-2"
+              style="padding: 10px 16px"
+            >
+              <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span
+              ><span class="text-sm font-semibold" style="color: #0b1c30"
+                >4.6/5</span
+              ><span class="text-xs text-secondary">Play Store</span>
+            </div>
+            <div
+              class="stat-pill flex items-center gap-2"
+              style="padding: 10px 16px"
+            >
+              <span class="font-bold text-sm text-primary">4K+</span
+              ><span class="text-xs text-secondary">Downloads</span>
+            </div>
+            <div
+              class="stat-pill flex items-center gap-2"
+              style="padding: 10px 16px"
+            >
+              <span class="font-bold text-sm" style="color: #16a34a">Free</span
+              ><span class="text-xs text-secondary">to download</span>
+            </div>
+          </div>
+        </div>
 
-body{
-font-family:Arial;
-background:#f4f6f8;
-text-align:center;
-margin:0;
-padding:0;
-}
+        <!-- Right: Phone Mockup -->
+        <div class="relative flex items-center justify-center" data-aos="fl">
+          <div
+            class="absolute -top-8 right-10 w-24 h-24 rounded-2xl rotate-12 blur-sm"
+            style="background: rgba(26, 86, 219, 0.1)"
+          ></div>
+          <div
+            class="absolute -bottom-4 left-4 w-20 h-20 rounded-full blur-sm"
+            style="background: rgba(59, 130, 246, 0.1)"
+          ></div>
 
-header{
-background:#2563eb;
-color:white;
-padding:40px 20px;
-}
+          <div
+            class="phone-frame animate-float-slow"
+            style="width: 268px; position: relative"
+          >
+            <!-- Notch -->
+            <div
+              style="
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 72px;
+                height: 19px;
+                background: #0b1c30;
+                border-radius: 0 0 11px 11px;
+                z-index: 10;
+              "
+            ></div>
+            <div class="phone-screen" style="position: relative">
+              <!-- Status bar -->
+              <div
+                style="
+                  background: #fff;
+                  padding: 28px 18px 4px;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  font-size: 10px;
+                  color: #6b7280;
+                  font-weight: 500;
+                "
+              >
+                <span>12:05</span>
+                <div style="display: flex; align-items: center; gap: 4px">
+                  <svg width="11" height="9" fill="#374151">
+                    <path d="M1 5.5h2v3H1zM4.5 3h2v5.5h-2zM8 .5h2V8.5H8z" />
+                  </svg>
+                  <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
+                    <rect
+                      x=".5"
+                      y=".5"
+                      width="17"
+                      height="9"
+                      rx="2"
+                      stroke="#374151"
+                    />
+                    <rect
+                      x="1.5"
+                      y="1.5"
+                      width="12"
+                      height="7"
+                      rx="1"
+                      fill="#374151"
+                    />
+                    <rect
+                      x="18"
+                      y="3"
+                      width="2"
+                      height="4"
+                      rx="1"
+                      fill="#374151"
+                    />
+                  </svg>
+                </div>
+              </div>
 
-h1{
-margin:0;
-font-size:40px;
-}
+              <!-- App UI -->
+              <div
+                style="
+                  background: #f9fafb;
+                  padding: 6px 10px 12px;
+                  min-height: 458px;
+                "
+              >
+                <!-- Top bar -->
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 5px 0 8px;
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 5px">
+                    <div
+                      style="
+                        width: 22px;
+                        height: 22px;
+                        background: #1a56db;
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      "
+                    >
+                      <svg
+                        width="13"
+                        height="13"
+                        fill="white"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"
+                        />
+                      </svg>
+                    </div>
+                    <span
+                      style="font-size: 10px; font-weight: 700; color: #1f2937"
+                      >Upload Document</span
+                    >
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 4px">
+                    <div
+                      style="
+                        border: 1px solid #1a56db;
+                        color: #1a56db;
+                        font-size: 8px;
+                        font-weight: 700;
+                        padding: 3px 5px;
+                        border-radius: 5px;
+                      "
+                    >
+                      CHOOSE FILE
+                    </div>
+                    <div
+                      style="
+                        width: 22px;
+                        height: 22px;
+                        background: #1a56db;
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      "
+                    >
+                      <svg
+                        width="13"
+                        height="13"
+                        fill="white"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.3.07-.62.07-.94s-.03-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.44.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.62-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
 
-section{
-padding:40px 20px;
-max-width:800px;
-margin:auto;
-}
+                <!-- Input content label -->
+                <div
+                  style="
+                    font-size: 7.5px;
+                    font-weight: 700;
+                    color: #9ca3af;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin-bottom: 4px;
+                  "
+                >
+                  Input Content
+                </div>
 
-.features{
-text-align:left;
-}
+                <!-- Content area + floating overlay -->
+                <div style="position: relative">
+                  <div
+                    style="
+                      background: #fff;
+                      border-radius: 10px;
+                      border: 1px solid #e5e7eb;
+                      padding: 6px 8px;
+                      height: 106px;
+                      overflow: hidden;
+                      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+                    "
+                  >
+                    <div
+                      style="
+                        font-size: 8px;
+                        color: #1a56db;
+                        text-align: center;
+                        margin-bottom: 3px;
+                        opacity: 0.7;
+                      "
+                    >
+                      Paste or enter
+                    </div>
+                    <div
+                      style="
+                        font-family: monospace;
+                        font-size: 7.5px;
+                        color: #4b5563;
+                        line-height: 1.8;
+                      "
+                    >
+                      <div style="display: flex">
+                        <span
+                          style="color: #9ca3af; width: 14px; margin-right: 3px"
+                          >1&gt;</span
+                        ><span>text1</span>
+                      </div>
+                      <div style="display: flex">
+                        <span
+                          style="color: #9ca3af; width: 14px; margin-right: 3px"
+                          >2&gt;</span
+                        ><span>text2</span>
+                      </div>
+                      <div style="display: flex">
+                        <span
+                          style="color: #9ca3af; width: 14px; margin-right: 3px"
+                          >3&gt;</span
+                        ><span>text3</span>
+                      </div>
+                      <div style="display: flex">
+                        <span
+                          style="color: #9ca3af; width: 14px; margin-right: 3px"
+                          >4&gt;</span
+                        ><span
+                          >text4<span style="border-right: 1.5px solid #374151"
+                            >&nbsp;</span
+                          ></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Floating window overlay -->
+                  <div
+                    style="
+                      position: absolute;
+                      top: 5px;
+                      right: -4px;
+                      width: 126px;
+                      background: #fff;
+                      border-radius: 12px;
+                      box-shadow: 0 8px 24px rgba(26, 86, 219, 0.28);
+                      border: 1px solid rgba(26, 86, 219, 0.18);
+                      overflow: hidden;
+                      z-index: 5;
+                    "
+                  >
+                    <div
+                      style="
+                        background: linear-gradient(135deg, #1a56db, #2563eb);
+                        padding: 6px 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                      "
+                    >
+                      <span
+                        style="color: #fff; font-size: 8px; font-weight: 700"
+                        >FloatText</span
+                      >
+                      <div style="display: flex; gap: 3px">
+                        <div
+                          style="
+                            width: 13px;
+                            height: 13px;
+                            background: #3b82f6;
+                            border-radius: 3px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 8px;
+                            line-height: 1;
+                          "
+                        >
+                          —
+                        </div>
+                        <div
+                          style="
+                            width: 13px;
+                            height: 13px;
+                            background: #ef4444;
+                            border-radius: 3px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 8px;
+                            line-height: 1;
+                          "
+                        >
+                          &#10005;
+                        </div>
+                      </div>
+                    </div>
+                    <div style="padding: 8px; text-align: center">
+                      <div
+                        style="
+                          font-size: 14px;
+                          font-weight: 700;
+                          color: #1f2937;
+                          margin-bottom: 1px;
+                        "
+                      >
+                        text1
+                      </div>
+                      <div
+                        style="
+                          font-size: 8px;
+                          color: #9ca3af;
+                          margin-bottom: 7px;
+                        "
+                      >
+                        1/4
+                      </div>
+                      <div style="display: flex; gap: 4px; margin-bottom: 5px">
+                        <div
+                          style="
+                            flex: 1;
+                            background: #1a56db;
+                            color: #fff;
+                            font-size: 7.5px;
+                            border-radius: 5px;
+                            padding: 5px 0;
+                            text-align: center;
+                            font-weight: 600;
+                          "
+                        >
+                          Previous
+                        </div>
+                        <div
+                          style="
+                            flex: 1;
+                            background: #22c55e;
+                            color: #fff;
+                            font-size: 7.5px;
+                            border-radius: 5px;
+                            padding: 5px 0;
+                            text-align: center;
+                            font-weight: 600;
+                          "
+                        >
+                          Next
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          background: #4ade80;
+                          color: #fff;
+                          font-size: 9px;
+                          border-radius: 7px;
+                          padding: 7px 0;
+                          text-align: center;
+                          font-weight: 700;
+                          letter-spacing: 0.05em;
+                        "
+                      >
+                        COPY
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-.button{
-background:#16a34a;
-color:white;
-padding:15px 25px;
-text-decoration:none;
-border-radius:6px;
-font-size:18px;
-}
+                <!-- Separator config -->
+                <div
+                  style="
+                    font-size: 7.5px;
+                    font-weight: 700;
+                    color: #9ca3af;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin: 10px 0 4px;
+                  "
+                >
+                  Separator Configuration
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 4px;
+                    margin-bottom: 8px;
+                  "
+                >
+                  <div
+                    style="
+                      background: #1a56db;
+                      border-radius: 7px;
+                      padding: 6px 7px;
+                      display: flex;
+                      align-items: center;
+                      gap: 3px;
+                    "
+                  >
+                    <span style="color: #fff; font-size: 9px">&#9166;</span
+                    ><span
+                      style="color: #fff; font-size: 7.5px; font-weight: 700"
+                      >New Line</span
+                    >
+                  </div>
+                  <div
+                    style="
+                      background: #fff;
+                      border: 1px solid #e5e7eb;
+                      border-radius: 7px;
+                      padding: 6px 7px;
+                    "
+                  >
+                    <span style="color: #6b7280; font-size: 7.5px"
+                      >&#183; Space</span
+                    >
+                  </div>
+                  <div
+                    style="
+                      background: #fff;
+                      border: 1px solid #e5e7eb;
+                      border-radius: 7px;
+                      padding: 6px 7px;
+                    "
+                  >
+                    <span style="color: #6b7280; font-size: 7.5px"
+                      >; Semicolon</span
+                    >
+                  </div>
+                  <div
+                    style="
+                      background: #fff;
+                      border: 1px solid #e5e7eb;
+                      border-radius: 7px;
+                      padding: 6px 7px;
+                    "
+                  >
+                    <span style="color: #6b7280; font-size: 7.5px"
+                      >, Comma</span
+                    >
+                  </div>
+                </div>
 
-footer{
-margin-top:40px;
-padding:20px;
-background:#111;
-color:white;
-}
+                <!-- Window dimensions -->
+                <div
+                  style="
+                    font-size: 7.5px;
+                    font-weight: 700;
+                    color: #9ca3af;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin-bottom: 4px;
+                  "
+                >
+                  Window Dimensions
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 4px;
+                    margin-bottom: 8px;
+                  "
+                >
+                  <div
+                    style="
+                      background: #fff;
+                      border: 1px solid #e5e7eb;
+                      border-radius: 7px;
+                      padding: 6px;
+                      text-align: center;
+                      font-size: 11px;
+                      font-weight: 600;
+                      color: #1f2937;
+                    "
+                  >
+                    600
+                  </div>
+                  <div
+                    style="
+                      background: #fff;
+                      border: 1px solid #e5e7eb;
+                      border-radius: 7px;
+                      padding: 6px;
+                      text-align: center;
+                      font-size: 11px;
+                      font-weight: 600;
+                      color: #1f2937;
+                    "
+                  >
+                    650
+                  </div>
+                </div>
 
-</style>
-</head>
+                <!-- Launch button -->
+                <div
+                  style="
+                    background: #1a56db;
+                    border-radius: 11px;
+                    padding: 11px;
+                    text-align: center;
+                    color: #fff;
+                    font-size: 10.5px;
+                    font-weight: 700;
+                    box-shadow: 0 4px 12px rgba(26, 86, 219, 0.35);
+                  "
+                >
+                  Launch Floating Window
+                </div>
 
-<body>
+                <!-- Android nav bar -->
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-around;
+                    padding: 10px 0 2px;
+                    margin-top: 4px;
+                  "
+                >
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                    <path
+                      d="M15 19l-7-7 7-7"
+                      stroke="#D1D5DB"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <div
+                    style="
+                      width: 16px;
+                      height: 16px;
+                      border-radius: 50%;
+                      border: 2px solid #d1d5db;
+                    "
+                  ></div>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                    <rect
+                      x="3"
+                      y="3"
+                      width="7"
+                      height="7"
+                      rx="1"
+                      stroke="#D1D5DB"
+                      stroke-width="1.5"
+                    />
+                    <rect
+                      x="14"
+                      y="3"
+                      width="7"
+                      height="7"
+                      rx="1"
+                      stroke="#D1D5DB"
+                      stroke-width="1.5"
+                    />
+                    <rect
+                      x="3"
+                      y="14"
+                      width="7"
+                      height="7"
+                      rx="1"
+                      stroke="#D1D5DB"
+                      stroke-width="1.5"
+                    />
+                    <rect
+                      x="14"
+                      y="14"
+                      width="7"
+                      height="7"
+                      rx="1"
+                      stroke="#D1D5DB"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<header>
-<h1>FloatText</h1>
-<p>Floating Clipboard & Quick Copy Tool</p>
-</header>
+          <!-- Floating Chips -->
+          <div
+            class="float-chip animate-float-med absolute"
+            style="
+              right: -18px;
+              top: 55px;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              animation-delay: 0.8s;
+            "
+          >
+            <div
+              style="
+                width: 26px;
+                height: 26px;
+                background: #dcfce7;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              "
+            >
+              <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                <path
+                  d="M20 6L9 17l-5-5"
+                  stroke="#16A34A"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #0b1c30">
+                Copied!
+              </div>
+              <div style="font-size: 9px; color: #545f73">1/4 done</div>
+            </div>
+          </div>
+          <div
+            class="float-chip animate-float-med absolute"
+            style="
+              left: -26px;
+              bottom: 84px;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              animation-delay: 1.8s;
+            "
+          >
+            <div
+              style="
+                width: 26px;
+                height: 26px;
+                background: #0b1c30;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              "
+            >
+              <svg width="12" height="12" fill="#fff" viewBox="0 0 24 24">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
+              </svg>
+            </div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #0b1c30">
+                Dark Mode
+              </div>
+              <div style="font-size: 9px; color: #545f73">Always on top</div>
+            </div>
+          </div>
+          <div
+            class="float-chip animate-bounce-sub absolute"
+            style="
+              left: -14px;
+              top: 76px;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            "
+          >
+            <div
+              style="
+                width: 30px;
+                height: 30px;
+                background: linear-gradient(135deg, #1a56db, #2563eb);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(26, 86, 219, 0.4);
+              "
+            >
+              <span style="color: #fff; font-weight: 900; font-size: 13px"
+                >F</span
+              >
+            </div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #0b1c30">
+                Bubble Mode
+              </div>
+              <div style="font-size: 9px; color: #545f73">Tap to restore</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section>
+    <!-- ══ MARQUEE ══ -->
+    <div class="bg-white border-y border-outline-variant py-3 overflow-hidden">
+      <div class="mq-wrap"><div class="mq-track" id="mq"></div></div>
+    </div>
 
-<h2>About FloatText</h2>
+    <!-- ══ FEATURES ══ -->
+    <section id="features" class="py-24" style="background: #eff4ff">
+      <div class="max-w-7xl mx-auto px-6 md:px-10">
+        <div class="text-center mb-14" data-aos>
+          <div class="section-badge" style="margin: 0 auto 20px">
+            <span class="material-symbols-outlined" style="font-size: 13px"
+              >star</span
+            >Features
+          </div>
+          <h2
+            class="font-grotesk font-black mb-4 tracking-tight"
+            style="font-size: clamp(28px, 4vw, 46px); color: #0b1c30"
+          >
+            Everything You Need to
+            <span class="gradient-text">Copy Faster</span>
+          </h2>
+          <p class="text-secondary text-lg max-w-xl mx-auto leading-relaxed">
+            A complete clipboard workflow tool that stays out of your way until
+            you need it.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+          <!-- Floating Window (big) -->
+          <div
+            class="md:col-span-7 feature-card p-8 flex flex-col gap-7"
+            style="min-height: 320px"
+            data-aos
+          >
+            <div>
+              <div
+                style="
+                  width: 44px;
+                  height: 44px;
+                  background: rgba(26, 86, 219, 0.1);
+                  border-radius: 16px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  margin-bottom: 18px;
+                "
+              >
+                <span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: 22px"
+                  >layers</span
+                >
+              </div>
+              <h3
+                class="font-grotesk font-bold mb-2"
+                style="font-size: 20px; color: #0b1c30"
+              >
+                Always-on Floating Window
+              </h3>
+              <p class="text-secondary text-sm leading-relaxed">
+                The overlay stays above every app — browser, delivery, chat.
+                Navigate with Prev/Next or hit
+                <strong style="color: #0b1c30">COPY</strong> to copy and
+                auto-advance.
+              </p>
+            </div>
+            <div class="demo-win" style="max-width: 340px">
+              <div class="demo-bar">
+                <span style="color: #fff; font-size: 11px; font-weight: 700"
+                  >FloatText Window</span
+                >
+                <div style="display: flex; gap: 5px">
+                  <div
+                    style="
+                      width: 10px;
+                      height: 10px;
+                      background: #93c5fd;
+                      border-radius: 2px;
+                    "
+                  ></div>
+                  <div
+                    style="
+                      width: 10px;
+                      height: 10px;
+                      background: #f87171;
+                      border-radius: 2px;
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="demo-item active">
+                <span
+                  style="
+                    color: #374151;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    flex: 1;
+                  "
+                  >Shipping: 123 Tech Lane, Mumbai</span
+                >
+                <div
+                  style="
+                    flex-shrink: 0;
+                    width: 24px;
+                    height: 24px;
+                    background: #1a56db;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="color: #fff; font-size: 13px"
+                    >content_copy</span
+                  >
+                </div>
+              </div>
+              <div class="demo-item">
+                <span
+                  style="
+                    color: #6b7280;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    flex: 1;
+                  "
+                  >Promo Code: FLOAT2024</span
+                >
+                <div
+                  style="
+                    flex-shrink: 0;
+                    width: 24px;
+                    height: 24px;
+                    background: #f1f5ff;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    class="material-symbols-outlined text-primary"
+                    style="font-size: 13px"
+                    >content_copy</span
+                  >
+                </div>
+              </div>
+              <div class="demo-item" style="border-bottom: 0">
+                <span
+                  style="
+                    color: #6b7280;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    flex: 1;
+                  "
+                  >Invoice #88432-B</span
+                >
+                <div
+                  style="
+                    flex-shrink: 0;
+                    width: 24px;
+                    height: 24px;
+                    background: #f1f5ff;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    class="material-symbols-outlined text-primary"
+                    style="font-size: 13px"
+                    >content_copy</span
+                  >
+                </div>
+              </div>
+              <div
+                style="
+                  padding: 8px 12px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  border-top: 1px solid #f1f5ff;
+                "
+              >
+                <div
+                  style="
+                    flex: 1;
+                    background: #1a56db;
+                    color: #fff;
+                    font-size: 10px;
+                    text-align: center;
+                    padding: 6px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                  "
+                >
+                  &#8592; Prev
+                </div>
+                <span
+                  style="font-size: 10px; color: #9ca3af; white-space: nowrap"
+                  >1/3</span
+                >
+                <div
+                  style="
+                    flex: 1;
+                    background: #22c55e;
+                    color: #fff;
+                    font-size: 10px;
+                    text-align: center;
+                    padding: 6px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                  "
+                >
+                  Next &#8594;
+                </div>
+              </div>
+            </div>
+          </div>
 
-<p>
-FloatText is a powerful floating clipboard tool that helps you copy
-multiple lines of text quickly using a floating window that stays on
-top of other apps.
-</p>
+          <!-- Bubble Mode -->
+          <div
+            class="md:col-span-5 feature-card p-8 flex flex-col gap-6"
+            data-aos
+          >
+            <div>
+              <div
+                style="
+                  width: 44px;
+                  height: 44px;
+                  background: rgba(26, 86, 219, 0.1);
+                  border-radius: 16px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  margin-bottom: 18px;
+                "
+              >
+                <span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: 22px"
+                  >bubble_chart</span
+                >
+              </div>
+              <h3
+                class="font-grotesk font-bold mb-2"
+                style="font-size: 20px; color: #0b1c30"
+              >
+                Minimize to Bubble
+              </h3>
+              <p class="text-secondary text-sm leading-relaxed">
+                Collapse to a floating icon. Drag it anywhere. Tap to restore —
+                your position is always saved.
+              </p>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+                padding: 10px 0;
+              "
+            >
+              <div class="bubble-icon animate-float-med">F</div>
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path
+                  d="M5 12h14M14 7l5 5-5 5"
+                  stroke="#D1D5DB"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <div class="demo-win" style="width: 110px">
+                <div class="demo-bar" style="padding: 6px 10px">
+                  <span style="color: #fff; font-size: 9px; font-weight: 700"
+                    >FloatText</span
+                  >
+                </div>
+                <div style="padding: 8px; text-align: center">
+                  <div
+                    style="font-size: 13px; font-weight: 700; color: #1f2937"
+                  >
+                    text1
+                  </div>
+                  <div style="font-size: 8px; color: #9ca3af">1/4</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<a class="button" href="https://play.google.com/store/apps/details?id=com.floattext.app">
-Download on Google Play
-</a>
+          <!-- 4 Separator Modes -->
+          <div class="md:col-span-5 feature-card p-8" data-aos>
+            <div
+              style="
+                width: 44px;
+                height: 44px;
+                background: rgba(26, 86, 219, 0.1);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 22px"
+                >splitscreen</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 20px; color: #0b1c30"
+            >
+              4 Separator Modes
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed mb-5">
+              Split by newline, space, semicolon, or comma. Line numbers show
+              automatically in Newline mode.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <div class="sep-on">&#9166; New Line</div>
+              <div class="sep-off">&#183; Space</div>
+              <div class="sep-off">; Semicolon</div>
+              <div class="sep-off">, Comma</div>
+            </div>
+          </div>
 
-</section>
+          <!-- File Import -->
+          <div class="md:col-span-4 feature-card p-8" data-aos>
+            <div
+              style="
+                width: 44px;
+                height: 44px;
+                background: rgba(26, 86, 219, 0.1);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 22px"
+                >upload_file</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 20px; color: #0b1c30"
+            >
+              File Import
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed">
+              Pick any <span class="tag">.txt</span> file from your device.
+              Content loads instantly — no retyping ever.
+            </p>
+          </div>
 
-<section class="features">
+          <!-- Dark Mode -->
+          <div
+            class="md:col-span-3 feature-card p-8"
+            style="background: #0b1c30"
+            data-aos
+          >
+            <div
+              style="
+                width: 44px;
+                height: 44px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined"
+                style="color: #fff; font-size: 22px"
+                >dark_mode</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 20px; color: #fff"
+            >
+              Dark Mode
+            </h3>
+            <p style="color: #9ca3af; font-size: 13px; line-height: 1.6">
+              Full dark theme — easy on eyes day or night. Persisted across
+              sessions.
+            </p>
+            <div style="display: flex; gap: 8px; margin-top: 16px">
+              <div
+                style="
+                  flex: 1;
+                  background: #1f2937;
+                  border: 1px solid #374151;
+                  border-radius: 8px;
+                  padding: 7px;
+                  text-align: center;
+                  font-size: 10px;
+                  color: #d1d5db;
+                "
+              >
+                Dark
+              </div>
+              <div
+                style="
+                  flex: 1;
+                  background: #fff;
+                  border-radius: 8px;
+                  padding: 7px;
+                  text-align: center;
+                  font-size: 10px;
+                  color: #374151;
+                "
+              >
+                Light
+              </div>
+            </div>
+          </div>
 
-<h2>Features</h2>
+          <!-- Input History -->
+          <div class="md:col-span-5 feature-card p-8" data-aos>
+            <div
+              style="
+                width: 44px;
+                height: 44px;
+                background: rgba(26, 86, 219, 0.1);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 22px"
+                >history</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 20px; color: #0b1c30"
+            >
+              Input History
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed mb-5">
+              Last 10 inputs auto-saved. Reload any previous session instantly —
+              no re-typing needed.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  background: #f9fafb;
+                  border: 1px solid #f3f4f6;
+                  border-radius: 12px;
+                  padding: 10px 14px;
+                "
+              >
+                <div>
+                  <div
+                    style="font-size: 11px; font-weight: 600; color: #0b1c30"
+                  >
+                    text1, text2, text3...
+                  </div>
+                  <div style="font-size: 10px; color: #545f73">
+                    4 lines &middot; 2 mins ago
+                  </div>
+                </div>
+                <div style="font-size: 11px; font-weight: 700; color: #1a56db">
+                  Load &#8594;
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  background: #f9fafb;
+                  border: 1px solid #f3f4f6;
+                  border-radius: 12px;
+                  padding: 10px 14px;
+                "
+              >
+                <div>
+                  <div
+                    style="font-size: 11px; font-weight: 600; color: #0b1c30"
+                  >
+                    Invoice #88432-B
+                  </div>
+                  <div style="font-size: 10px; color: #545f73">
+                    1 line &middot; yesterday
+                  </div>
+                </div>
+                <div style="font-size: 11px; font-weight: 700; color: #1a56db">
+                  Load &#8594;
+                </div>
+              </div>
+            </div>
+          </div>
 
-<ul>
-<li>Floating clipboard window</li>
-<li>Quick copy multiple lines</li>
-<li>One-tap copy navigation</li>
-<li>Floating bubble mode</li>
-<li>Dark mode support</li>
-<li>Fast and lightweight</li>
-</ul>
+          <!-- Custom Size -->
+          <div class="md:col-span-4 feature-card p-8" data-aos>
+            <div
+              style="
+                width: 44px;
+                height: 44px;
+                background: rgba(26, 86, 219, 0.1);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 22px"
+                >open_in_full</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 20px; color: #0b1c30"
+            >
+              Custom Window Size
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed mb-5">
+              Set exact px width &amp; height. FloatText picks the best layout
+              automatically.
+            </p>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"
+            >
+              <div
+                style="
+                  background: #f9fafb;
+                  border: 1px solid #f3f4f6;
+                  border-radius: 12px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div style="font-size: 9px; color: #545f73; margin-bottom: 4px">
+                  Width
+                </div>
+                <div style="font-size: 22px; font-weight: 700; color: #0b1c30">
+                  600
+                </div>
+                <div style="font-size: 9px; color: #9ca3af">px</div>
+              </div>
+              <div
+                style="
+                  background: #f9fafb;
+                  border: 1px solid #f3f4f6;
+                  border-radius: 12px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div style="font-size: 9px; color: #545f73; margin-bottom: 4px">
+                  Height
+                </div>
+                <div style="font-size: 22px; font-weight: 700; color: #0b1c30">
+                  650
+                </div>
+                <div style="font-size: 9px; color: #9ca3af">px</div>
+              </div>
+            </div>
+          </div>
 
-</section>
+          <!-- Stats -->
+          <div
+            class="md:col-span-3 rounded-2xl p-8 flex flex-col"
+            style="background: #1a56db"
+            data-aos
+          >
+            <div
+              style="
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 13px;
+                font-weight: 500;
+                margin-bottom: 20px;
+              "
+            >
+              Performance
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px">
+              <div>
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 36px;
+                    font-weight: 900;
+                    line-height: 1;
+                  "
+                >
+                  4K+
+                </div>
+                <div style="color: rgba(255, 255, 255, 0.65); font-size: 13px">
+                  Active downloads
+                </div>
+              </div>
+              <div
+                style="height: 1px; background: rgba(255, 255, 255, 0.15)"
+              ></div>
+              <div>
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 36px;
+                    font-weight: 900;
+                    line-height: 1;
+                  "
+                >
+                  4.6&#9733;
+                </div>
+                <div style="color: rgba(255, 255, 255, 0.65); font-size: 13px">
+                  Play Store rating
+                </div>
+              </div>
+              <div
+                style="height: 1px; background: rgba(255, 255, 255, 0.15)"
+              ></div>
+              <div>
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 36px;
+                    font-weight: 900;
+                    line-height: 1;
+                  "
+                >
+                  0
+                </div>
+                <div style="color: rgba(255, 255, 255, 0.65); font-size: 13px">
+                  Personal data collected
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section>
+    <!-- ══ HOW IT WORKS ══ -->
+    <section id="how-it-works" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-6 md:px-10">
+        <div class="text-center mb-14" data-aos>
+          <div class="section-badge" style="margin: 0 auto 20px">
+            <span class="material-symbols-outlined" style="font-size: 13px"
+              >play_circle</span
+            >How It Works
+          </div>
+          <h2
+            class="font-grotesk font-black mb-4 tracking-tight"
+            style="font-size: clamp(26px, 4vw, 44px); color: #0b1c30"
+          >
+            Up &amp; Running in <span class="gradient-text">30 Seconds</span>
+          </h2>
+          <p class="text-secondary text-lg max-w-md mx-auto">
+            Three simple steps and you're copying faster than ever.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          <div
+            class="hidden md:block absolute h-px"
+            style="
+              top: 32px;
+              left: calc(33.33% + 20px);
+              right: calc(33.33% + 20px);
+              background: linear-gradient(
+                90deg,
+                rgba(26, 86, 219, 0.3),
+                #1a56db,
+                rgba(26, 86, 219, 0.3)
+              );
+            "
+          ></div>
+          <div class="feature-card p-8 text-center" data-aos>
+            <div class="step-num">1</div>
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                background: rgba(26, 86, 219, 0.05);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 28px"
+                >edit_note</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 18px; color: #0b1c30"
+            >
+              Enter or Import Text
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed">
+              Type items line by line, paste a list, or import a
+              <span class="tag">.txt</span> file. Choose your separator.
+            </p>
+          </div>
+          <div
+            class="feature-card p-8 text-center"
+            data-aos
+            style="transition-delay: 0.12s"
+          >
+            <div class="step-num">2</div>
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                background: rgba(26, 86, 219, 0.05);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 28px"
+                >open_with</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 18px; color: #0b1c30"
+            >
+              Launch Floating Window
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed">
+              Tap "Launch Floating Window". FloatText appears on top of all apps
+              — even games and browsers.
+            </p>
+          </div>
+          <div
+            class="feature-card p-8 text-center"
+            data-aos
+            style="transition-delay: 0.24s"
+          >
+            <div class="step-num">3</div>
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                background: rgba(26, 86, 219, 0.05);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 28px"
+                >content_copy</span
+              >
+            </div>
+            <h3
+              class="font-grotesk font-bold mb-2"
+              style="font-size: 18px; color: #0b1c30"
+            >
+              Copy &amp; Paste Away
+            </h3>
+            <p class="text-secondary text-sm leading-relaxed">
+              Tap COPY to grab the current item and auto-advance. Navigate
+              freely with Prev / Next.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<h2>Support</h2>
+    <!-- ══ REVIEWS ══ -->
+    <section class="py-20" style="background: #eff4ff">
+      <div class="max-w-7xl mx-auto px-6 md:px-10">
+        <div class="text-center mb-12" data-aos>
+          <div class="section-badge" style="margin: 0 auto 20px">
+            <span class="material-symbols-outlined" style="font-size: 13px"
+              >reviews</span
+            >User Reviews
+          </div>
+          <h2
+            class="font-grotesk font-black tracking-tight"
+            style="font-size: clamp(24px, 4vw, 40px); color: #0b1c30"
+          >
+            Loved by Power Users
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5" data-aos>
+          <div class="feature-card p-6">
+            <div class="stars text-xl mb-3">
+              &#9733;&#9733;&#9733;&#9733;&#9733;
+            </div>
+            <p class="text-secondary text-sm leading-relaxed mb-4">
+              "the user interface is really amazing and the app is working
+              smoothly very use ful app for me helping copy pasting texts
+              without switching apps"
+            </p>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  background: #1a56db;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #fff;
+                  font-weight: 700;
+                  font-size: 14px;
+                  flex-shrink: 0;
+                "
+              >
+                R
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; color: #0b1c30">
+                  Pawan Sahu
+                </div>
+                <div style="font-size: 10px; color: #545f73">
+                  Verified Purchase
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="feature-card p-6">
+            <div class="stars text-xl mb-3">
+              &#9733;&#9733;&#9733;&#9733;&#9733;
+            </div>
+            <p class="text-secondary text-sm leading-relaxed mb-4">
+              "This is a great application that can help improve efficiency
+              while working or doing anything office related. you should check
+              it out, download it and see for yourself. I have used it and I
+              must say that I am impressed. it is good. "
+            </p>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  background: #22c55e;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #fff;
+                  font-weight: 700;
+                  font-size: 14px;
+                  flex-shrink: 0;
+                "
+              >
+                P
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; color: #0b1c30">
+                  onyenankeya evans
+                </div>
+                <div style="font-size: 10px; color: #545f73">
+                  Verified Purchase
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="feature-card p-6">
+            <div class="stars text-xl mb-3">
+              &#9733;&#9733;&#9733;&#9733;&#9733;
+            </div>
+            <p class="text-secondary text-sm leading-relaxed mb-4">
+              "This app is a game-changer for anyone who handles a lot of data
+              or notes on their phone. It makes copying and managing text so
+              much faster, especially when you're juggling different tasks.
+              Definitely worth the download if you want to save time and stay
+              organized!"
+            </p>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 36px;
+                  height: 36px;
+                  background: #f97316;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #fff;
+                  font-weight: 700;
+                  font-size: 14px;
+                  flex-shrink: 0;
+                "
+              >
+                A
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; color: #0b1c30">
+                  Onyenankeya Victor
+                </div>
+                <div style="font-size: 10px; color: #545f73">
+                  Verified Purchase
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<p>Email: floattexthelp@gmail.com</p>
+    <!-- ══ SUPPORT ══ -->
+    <section id="support" class="py-24 bg-white">
+      <div
+        class="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-start"
+      >
+        <div data-aos="fr">
+          <div class="section-badge mb-6">
+            <span class="material-symbols-outlined" style="font-size: 13px"
+              >support_agent</span
+            >Support
+          </div>
+          <h2
+            class="font-grotesk font-black mb-5 tracking-tight"
+            style="font-size: clamp(26px, 4vw, 42px); color: #0b1c30"
+          >
+            We're Here <span class="gradient-text">to Help</span>
+          </h2>
+          <p class="text-secondary text-lg leading-relaxed mb-8">
+            Got a question, feature request, or bug? Most queries answered
+            within 24 hours.
+          </p>
+          <a
+            href="mailto:floattexthelp@gmail.com"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 16px;
+              padding: 20px;
+              background: #eff4ff;
+              border: 1px solid #c3c5d7;
+              border-radius: 16px;
+              text-decoration: none;
+              transition: all 0.2s;
+              margin-bottom: 16px;
+            "
+            onmouseover="
+              this.style.borderColor = '#1A56DB';
+              this.style.boxShadow = '0 8px 24px rgba(26,86,219,.12)';
+            "
+            onmouseout="
+              this.style.borderColor = '#C3C5D7';
+              this.style.boxShadow = 'none';
+            "
+          >
+            <div
+              style="
+                width: 52px;
+                height: 52px;
+                background: #1a56db;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(26, 86, 219, 0.3);
+              "
+            >
+              <span
+                class="material-symbols-outlined"
+                style="color: #fff; font-size: 24px"
+                >mail</span
+              >
+            </div>
+            <div>
+              <div style="font-size: 12px; color: #545f73">Reach us at</div>
+              <div style="font-size: 16px; font-weight: 700; color: #1a56db">
+                floattexthelp@gmail.com
+              </div>
+              <div style="font-size: 11px; color: #9ca3af; margin-top: 2px">
+                Usually replies in &lt; 24 hours
+              </div>
+            </div>
+          </a>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+            <div
+              style="
+                background: #eff4ff;
+                border: 1px solid #c3c5d7;
+                border-radius: 14px;
+                padding: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 22px; display: block; margin-bottom: 8px"
+                >bug_report</span
+              >
+              <div style="font-size: 13px; font-weight: 700; color: #0b1c30">
+                Report a Bug
+              </div>
+              <div style="font-size: 12px; color: #545f73; margin-top: 4px">
+                Describe what happened and we'll fix it fast.
+              </div>
+            </div>
+            <div
+              style="
+                background: #eff4ff;
+                border: 1px solid #c3c5d7;
+                border-radius: 14px;
+                padding: 18px;
+              "
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-size: 22px; display: block; margin-bottom: 8px"
+                >lightbulb</span
+              >
+              <div style="font-size: 13px; font-weight: 700; color: #0b1c30">
+                Feature Request
+              </div>
+              <div style="font-size: 12px; color: #545f73; margin-top: 4px">
+                We build features our users ask for.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-aos="fl">
+          <h3
+            class="font-grotesk font-bold mb-6"
+            style="font-size: 22px; color: #0b1c30"
+          >
+            Frequently Asked Questions
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <details
+              style="
+                border: 1px solid #c3c5d7;
+                border-radius: 14px;
+                overflow: hidden;
+              "
+            >
+              <summary
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding: 18px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #0b1c30;
+                "
+              >
+                Is FloatText free?<span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: 20px"
+                  >expand_more</span
+                >
+              </summary>
+              <div
+                style="
+                  padding: 0 18px 18px;
+                  font-size: 13px;
+                  color: #545f73;
+                  line-height: 1.7;
+                "
+              >
+                Yes! FloatText is free to download and use. An optional ad-free
+                upgrade is available via a rewarded video — no subscriptions, no
+                hidden fees.
+              </div>
+            </details>
+            <details
+              style="
+                border: 1px solid #c3c5d7;
+                border-radius: 14px;
+                overflow: hidden;
+              "
+            >
+              <summary
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding: 18px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #0b1c30;
+                "
+              >
+                What is the "Draw over apps" permission?<span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: 20px"
+                  >expand_more</span
+                >
+              </summary>
+              <div
+                style="
+                  padding: 0 18px 18px;
+                  font-size: 13px;
+                  color: #545f73;
+                  line-height: 1.7;
+                "
+              >
+                FloatText needs the <em>Display over other apps</em> permission
+                to show the floating window above your active app. This is the
+                only special permission required.
+              </div>
+            </details>
+            <details
+              style="
+                border: 1px solid #c3c5d7;
+                border-radius: 14px;
+                overflow: hidden;
+              "
+            >
+              <summary
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding: 18px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #0b1c30;
+                "
+              >
+                Does FloatText collect any data?<span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: 20px"
+                  >expand_more</span
+                >
+              </summary>
+              <div
+                style="
+                  padding: 0 18px 18px;
+                  font-size: 13px;
+                  color: #545f73;
+                  line-height: 1.7;
+                "
+              >
+                No. FloatText does not collect, store, or transmit any personal
+                data. Your text stays on your device. Ads are served by Google
+                AdMob under their privacy policy.
+              </div>
+            </details>
+            <details
+              style="
+                border: 1px solid #c3c5d7;
+                border-radius: 14px;
+                overflow: hidden;
+              "
+            >
+              <summary
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding: 18px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #0b1c30;
+                "
+              >
+                The floating window disappeared — what do I do?<span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: 20px"
+                  >expand_more</span
+                >
+              </summary>
+              <div
+                style="
+                  padding: 0 18px 18px;
+                  font-size: 13px;
+                  color: #545f73;
+                  line-height: 1.7;
+                "
+              >
+                Look for a small "F" bubble icon on screen edge — the window is
+                minimized. Tap to restore. If completely gone, swipe down and
+                tap the FloatText notification to re-open.
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
 
-</section>
+    <!-- ══ CTA ══ -->
+    <section class="py-16 px-6 md:px-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="cta-section py-20 px-8 md:px-20 text-center" data-aos>
+          <div style="position: relative; z-index: 1">
+            <div
+              class="section-badge"
+              style="
+                margin: 0 auto 28px;
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 255, 255, 0.2);
+                color: #fff;
+              "
+            >
+              <span class="material-symbols-outlined" style="font-size: 13px"
+                >download</span
+              >Free on Google Play
+            </div>
+            <h2
+              class="font-grotesk font-black text-white mb-6 tracking-tight"
+              style="font-size: clamp(28px, 5vw, 52px); line-height: 1.1"
+            >
+              Start Copying Smarter<br />Right Now
+            </h2>
+            <p
+              style="
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 17px;
+                max-width: 480px;
+                margin: 0 auto 36px;
+                line-height: 1.6;
+              "
+            >
+              Join 4000+ Android users who have eliminated copy-paste headaches
+              from their daily workflow.
+            </p>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.floattext.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 14px;
+                background: #fff;
+                color: #1a56db;
+                padding: 18px 36px;
+                border-radius: 20px;
+                font-weight: 700;
+                font-size: 16px;
+                text-decoration: none;
+                transition: all 0.25s;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+              "
+              onmouseover="
+                this.style.transform = 'scale(1.04)';
+                this.style.boxShadow = '0 16px 48px rgba(0,0,0,.3)';
+              "
+              onmouseout="
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 8px 32px rgba(0,0,0,.2)';
+              "
+            >
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+                <path d="M8 4l28.5 20L8 44V4z" fill="url(#c1)" />
+                <path d="M8 4l20 20-20 8V4z" fill="url(#c2)" />
+                <path d="M8 44l20-20 9.5 9.5L8 44z" fill="url(#c3)" />
+                <defs>
+                  <linearGradient
+                    id="c1"
+                    x1="8"
+                    y1="4"
+                    x2="36.5"
+                    y2="24"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#00C6FF" />
+                    <stop offset="1" stop-color="#0072FF" />
+                  </linearGradient>
+                  <linearGradient
+                    id="c2"
+                    x1="8"
+                    y1="4"
+                    x2="28"
+                    y2="24"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#54D26E" />
+                    <stop offset="1" stop-color="#35BC5A" />
+                  </linearGradient>
+                  <linearGradient
+                    id="c3"
+                    x1="8"
+                    y1="44"
+                    x2="37.5"
+                    y2="33"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#FF4E50" />
+                    <stop offset="1" stop-color="#F9D423" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  line-height: 1.2;
+                "
+              >
+                <span style="font-size: 10px; opacity: 0.6; font-weight: 400"
+                  >GET IT ON</span
+                >
+                <span>Google Play</span>
+              </div>
+            </a>
+            <p
+              style="
+                color: rgba(255, 255, 255, 0.4);
+                font-size: 12px;
+                margin-top: 18px;
+              "
+            >
+              Free &bull; No registration required &bull; Android 6+
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section>
+    <!-- ══ FOOTER ══ -->
+    <footer
+      id="privacy"
+      style="
+        background: #0b1c30;
+        color: rgba(255, 255, 255, 0.65);
+        padding: 64px 24px 32px;
+      "
+    >
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          <div style="grid-column: span 2">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 14px;
+              "
+            >
+              <div
+                style="
+                  width: 30px;
+                  height: 30px;
+                  background: #1a56db;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <span
+                  class="material-symbols-outlined"
+                  style="color: #fff; font-size: 16px"
+                  >content_paste</span
+                >
+              </div>
+              <span
+                class="font-grotesk"
+                style="font-weight: 700; font-size: 17px; color: #fff"
+                >Float<span style="color: #60a5fa">Text</span></span
+              >
+            </div>
+            <p
+              style="
+                font-size: 13px;
+                line-height: 1.7;
+                max-width: 280px;
+                margin-bottom: 16px;
+              "
+            >
+              Professional floating clipboard for Android. Copy multiple items
+              faster without switching apps. Built by NextBillionLabs.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <div
+                style="
+                  padding: 3px 10px;
+                  background: rgba(255, 255, 255, 0.08);
+                  border-radius: 6px;
+                  font-size: 11px;
+                  color: rgba(255, 255, 255, 0.5);
+                "
+              >
+                Android
+              </div>
+              <div
+                style="
+                  padding: 3px 10px;
+                  background: rgba(255, 255, 255, 0.08);
+                  border-radius: 6px;
+                  font-size: 11px;
+                  color: rgba(255, 255, 255, 0.5);
+                "
+              >
+                Free
+              </div>
+              <div
+                style="
+                  padding: 3px 10px;
+                  background: rgba(255, 255, 255, 0.08);
+                  border-radius: 6px;
+                  font-size: 11px;
+                  color: rgba(255, 255, 255, 0.5);
+                "
+              >
+                No Data Collected
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              style="
+                color: #fff;
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin-bottom: 18px;
+              "
+            >
+              Product
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                font-size: 13px;
+              "
+            >
+              <a
+                href="#features"
+                style="color: rgba(255, 255, 255, 0.6); text-decoration: none"
+                >Features</a
+              >
+              <a
+                href="#how-it-works"
+                style="color: rgba(255, 255, 255, 0.6); text-decoration: none"
+                >How It Works</a
+              >
+              <a
+                href="https://play.google.com/store/apps/details?id=com.floattext.app"
+                target="_blank"
+                style="color: rgba(255, 255, 255, 0.6); text-decoration: none"
+                >Download</a
+              >
+            </div>
+          </div>
+          <div>
+            <div
+              style="
+                color: #fff;
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin-bottom: 18px;
+              "
+            >
+              Company
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                font-size: 13px;
+              "
+            >
+              <a
+                href="#support"
+                style="color: rgba(255, 255, 255, 0.6); text-decoration: none"
+                >Support</a
+              >
+              <a
+                href="mailto:floattexthelp@gmail.com"
+                style="color: rgba(255, 255, 255, 0.6); text-decoration: none"
+                >Contact</a
+              >
+              <a
+                href="#privacy"
+                style="color: rgba(255, 255, 255, 0.6); text-decoration: none"
+                >Privacy Policy</a
+              >
+            </div>
+          </div>
+        </div>
+        <!-- Privacy box -->
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 28px;
+          "
+        >
+          <div
+            style="
+              width: 38px;
+              height: 38px;
+              background: rgba(26, 86, 219, 0.2);
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+            "
+          >
+            <span
+              class="material-symbols-outlined"
+              style="color: #60a5fa; font-size: 20px"
+              >shield</span
+            >
+          </div>
+          <div>
+            <div
+              style="
+                color: #fff;
+                font-weight: 600;
+                font-size: 13px;
+                margin-bottom: 5px;
+              "
+            >
+              Privacy Commitment
+            </div>
+            <p style="font-size: 12px; line-height: 1.7; margin: 0">
+              FloatText does not collect, store, or share any personal data. The
+              app only uses the "Display over other apps" system permission to
+              render the floating window. All text remains on your device. Ads
+              are served by Google AdMob under their privacy policy.
+            </p>
+          </div>
+        </div>
+        <div
+          style="
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+          "
+        ></div>
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+          "
+        >
+          <span>&copy; 2026 NextBillionLabs. All rights reserved.</span>
+          <div style="display: flex; gap: 24px">
+            <a
+              href="#"
+              style="color: rgba(255, 255, 255, 0.5); text-decoration: none"
+              >Privacy Policy</a
+            >
+            <a
+              href="#"
+              style="color: rgba(255, 255, 255, 0.5); text-decoration: none"
+              >Terms of Service</a
+            >
+            <a
+              href="mailto:floattexthelp@gmail.com"
+              style="color: rgba(255, 255, 255, 0.5); text-decoration: none"
+              >floattexthelp@gmail.com</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
 
-<h2>Privacy Policy</h2>
-
-<p>
-FloatText does not collect personal data. The app only displays a
-floating window to help users copy text faster and improve
-productivity.
-</p>
-
-</section>
-
-<footer>
-
-<p>© 2026 NextBillionLabs</p>
-
-</footer>
-
-</body>
+    <script>
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          var t = document.querySelector(a.getAttribute("href"));
+          if (t) {
+            e.preventDefault();
+            t.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+      // Navbar border on scroll
+      window.addEventListener("scroll", function () {
+        var n = document.getElementById("nav");
+        if (window.scrollY > 20) {
+          n.style.borderBottomColor = "#C3C5D7";
+          n.style.boxShadow = "0 1px 8px rgba(0,0,0,.06)";
+        } else {
+          n.style.borderBottomColor = "transparent";
+          n.style.boxShadow = "none";
+        }
+      });
+      // AOS
+      var ao = new IntersectionObserver(
+        function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add("vis");
+              ao.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      document.querySelectorAll("[data-aos]").forEach(function (el) {
+        ao.observe(el);
+      });
+      // Demo item clicks
+      document.querySelectorAll(".demo-item").forEach(function (item) {
+        item.addEventListener("click", function () {
+          document.querySelectorAll(".demo-item").forEach(function (i) {
+            i.classList.remove("active");
+          });
+          item.classList.add("active");
+        });
+      });
+      // Marquee
+      var tags = [
+        "Floating Window",
+        "One-tap Copy",
+        "File Import",
+        "Dark Mode",
+        "Bubble Icon",
+        "Separator Modes",
+        "Custom Size",
+        "Input History",
+        "4K+ Users",
+        "Free App",
+        "No Data Collected",
+        "Always On Top",
+      ];
+      var mq = document.getElementById("mq");
+      var html = tags
+        .map(function (t) {
+          return (
+            '<div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#545F73;font-weight:500;white-space:nowrap"><span class="material-symbols-outlined text-primary" style="font-size:15px">check_circle</span>' +
+            t +
+            "</div>"
+          );
+        })
+        .join("");
+      mq.innerHTML = html + html;
+    </script>
+  </body>
 </html>
